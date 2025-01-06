@@ -180,6 +180,7 @@ namespace Diplomka
                 Position = AxisPosition.Right,
                 Key = "Tertiary",
                 Title = "Rychlost (km/h)",
+                //Title = "W' (J)",              ////// change back
                 StartPosition = 0.7,
                 EndPosition = 1,
                 TitleFontSize = 18,
@@ -220,6 +221,7 @@ namespace Diplomka
             }
 
             var lineSeries3 = new LineSeries { Title = "Rychlost (v)", YAxisKey = "Tertiary" };
+            //var lineSeries3 = new LineSeries { Title = "W' zbývající", YAxisKey = "Tertiary" }; // for W' with CP model
             for (int i = 0; i < values.Count; i++)
             {
                 lineSeries3.Points.Add(new DataPoint(distance[i], values[i].velocity * 3.6));

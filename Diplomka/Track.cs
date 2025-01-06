@@ -157,10 +157,8 @@ namespace Diplomka
             XDocument gpxDoc = XDocument.Load(gpxFile);
             XNamespace gpxNs = "http://www.topografix.com/GPX/1/1";
 
-
             var trkpts = gpxDoc.Descendants(gpxNs + "trkpt").ToList();
             DateTime startTime = DateTime.MinValue;
-
 
             var firstTrkpt = trkpts.FirstOrDefault();
             if (firstTrkpt != null)
@@ -170,7 +168,7 @@ namespace Diplomka
                 {
                     startTime = DateTime.Parse(timeElement.Value, CultureInfo.InvariantCulture);
                 }
-                }
+            }
 
 
             List<Point> points = trkpts.Select(trkpt =>
@@ -178,6 +176,7 @@ namespace Diplomka
                 double lat = double.Parse(trkpt.Attribute("lat").Value, CultureInfo.InvariantCulture);
                 double lon = double.Parse(trkpt.Attribute("lon").Value, CultureInfo.InvariantCulture);
                 double ele = double.Parse(trkpt.Element(gpxNs + "ele").Value, CultureInfo.InvariantCulture);
+                //double wbal = double.Parse(trkpt.Element(gpxNs + "wbal").Value, CultureInfo.InvariantCulture); /////// for CP model
                 double time = 0;
 
                 var timeElement = trkpt.Element(gpxNs + "time");
@@ -190,8 +189,9 @@ namespace Diplomka
                 {
                     power = parsedPower;
                 }
-
-                return new Point(lat, lon, ele, crr, power, time);
+                Point p = new Point(lat, lon, ele, crr, power, time);
+                //p.velocity = wbal/3.6;                                                              //////////// for CP model
+                return p;
             }).ToList();
 
             GeoCoordinate start = new GeoCoordinate(points[0].lat, points[0].lon);
@@ -202,7 +202,9 @@ namespace Diplomka
                 {
                     points[i].dist_to_next = (new GeoCoordinate(points[i].lat, points[i].lon)).GetDistanceTo(new GeoCoordinate(points[i + 1].lat, points[i + 1].lon));
                     if (points[i + 1].time != 0)
-                        points[i].velocity = points[i].dist_to_next / (points[i + 1].time - points[i].time);
+                    {
+                        points[i].velocity = points[i].dist_to_next / (points[i + 1].time - points[i].time);     //////////// comment to view W' with CP model
+                    }
                 }
                 points[i].x = start.GetDistanceTo(new GeoCoordinate(points[0].lat, points[i].lon)) * Math.Sign(points[i].lon - points[0].lon);
                 points[i].y = start.GetDistanceTo(new GeoCoordinate(points[i].lat, points[0].lon)) * Math.Sign(points[i].lat - points[0].lat);
@@ -340,7 +342,7 @@ namespace Diplomka
             }
         }
 
-        List<double> estimateGradient(Cyclist c, double dE = 100, int estimationDistance=-1)        //estimates the gradient on fixed amount of steps (-1=whole course)
+        public List<double> estimateGradient(Cyclist c, double dE = 100, int estimationDistance=-1)        //estimates the gradient on fixed amount of steps (-1=whole course)
         {
             if (estimationDistance < 0)
                 estimationDistance = track.Count();
@@ -603,7 +605,7 @@ namespace Diplomka
                 track.Add(new Point(0, crr));
             }
             initialSolution(c);
-            solve(c);
+            //solve(c);
         }
 
         public void testWind(Cyclist c, int length, double windVelocity)
