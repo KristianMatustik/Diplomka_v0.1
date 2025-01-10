@@ -222,11 +222,11 @@ namespace Diplomka
 
             var lineSeries3 = new LineSeries { Title = "Rychlost (v)", YAxisKey = "Tertiary" };
             //var lineSeries3 = new LineSeries { Title = "W' zbývající", YAxisKey = "Tertiary" }; // for W' with CP model
-            for (int i = 0; i < values.Count; i++)
+            for (int i = 0; i < values.Count-1; i++)
             {
                 lineSeries3.Points.Add(new DataPoint(distance[i], values[i].velocity * 3.6));
             }
-
+            lineSeries3.Points.Add(new DataPoint(distance[values.Count - 1], values[values.Count - 2].velocity * 3.6));
 
             plotModel.Series.Add(lineSeries1);
             plotModel.Series.Add(lineSeries2);
