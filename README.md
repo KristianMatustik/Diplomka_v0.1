@@ -1,3 +1,3 @@
-First functioning version of an application for my diploma thesis. Mostly a prototype I will be completely overhauling.
+First functioning version (prototype) of an application for my diploma thesis.
 
-The applications purpose is to optimize pacing strategy for an individual cycling race based on set parameters such as the given course and wind speed for specified riders abilities.
+Served to experiment with and test different methods, as well as for basic visualisation of some results. Final developed app at https://github.com/KristianMatustik/PowerOptimizer 
